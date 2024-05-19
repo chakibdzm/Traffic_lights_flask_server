@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Traffic Light Smart IoT Simulation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>Traffic Count Simulation</h1>
+    <canvas id="trafficChart" width="400" height="200"></canvas>
+    <script>
+      async function fetchTrafficData() {
+        const response = await fetch('/api/traffic_chart_data');
+        const data = await response.json();
+        return data;
+      }
+
+      function updateChart(chart, data) {
+        chart.data.labels = data.road_1.map(item => new Date(item.time).toLocaleTimeString());
+        chart.data.datasets[0].data = data.road_1.map(item => item.count);
+        chart.data.datasets[1].data = data.road_2.map(item => item.count);
+        chart.update();
+      }
+
+      window.onload = async function() {
+        const ctx = document.getElementById('trafficChart').getContext('2d');
+        const trafficChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: 'Road 1',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [],
+                fill: false
+              },
+              {
+                label: 'Road 2',
+                borderColor: 'rgb(54, 162, 235)',
+                data: [],
+                fill: false
+              }
+            ]
+          },
+          options: {
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: 'Time'
+                }
+              },
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Car Count'
+                }
+              }
+            }
+          }
+        });
+
+        const data = await fetchTrafficData();
+        updateChart(trafficChart, data);
+
+    
+        setInterval(async () => {
+          const data = await fetchTrafficData();
+          updateChart(trafficChart, data);
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>
