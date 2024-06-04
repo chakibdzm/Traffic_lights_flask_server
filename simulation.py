@@ -1,37 +1,25 @@
 import requests
-import json
-import random
 import time
+import random
 
+def simulate_traffic_data():
+    url = "http://localhost:5000/api/traffic_data"
+    headers = {"Content-Type": "application/json"}
 
-url = 'http://127.0.0.1:5000/api/traffic_data'
-
-def generate_traffic_data():
-   
-    road_1_count = random.randint(0, 20)
-    road_2_count = random.randint(0, 20)
-
-  
-    traffic_data = {
-        "road_1": {
-            "car_count": road_1_count,
-            "light_status": "green" 
-        },
-        "road_2": {
-            "car_count": road_2_count,
-            "light_status": "red" 
+    while True:
+        road_1_count = random.randint(0, 100)
+        road_2_count = random.randint(0, 100)
+        data = {
+            "road_1": {"car_count": road_1_count},
+            "road_2": {"car_count": road_2_count}
         }
-    }
-    return traffic_data
+        response = requests.post(url, json=data, headers=headers)
+        if response.status_code == 200:
+            print(f"Data posted successfully: {data}")
+        else:
+            print(f"Failed to post data: {response.text}")
 
-def send_data(data):
-    headers = {'Content-Type': 'application/json'}
-    response = requests.post(url, data=json.dumps(data), headers=headers)
-    print(f"Status Code: {response.status_code}, Response: {response.json()}")
+        time.sleep(5)  # Post data every 5 seconds
 
 if __name__ == "__main__":
-    while True:
- 
-        traffic_data = generate_traffic_data()
-        send_data(traffic_data)
-        time.sleep(5) 
+    simulate_traffic_data()
