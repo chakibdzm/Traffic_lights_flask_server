@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Data</title>
+    <style>
+        .container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Traffic Data</h1>
+    <div id="road1Data">
+        {% for data_point in road1_data %}
+        <div class="container">
+            <h3>Time: {{ data_point.time }}</h3>
+            <p>Green Time: {{ data_point.green_time }}</p>
+            <p>Red Time: {{ data_point.red_time }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
